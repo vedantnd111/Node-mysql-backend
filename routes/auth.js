@@ -4,7 +4,7 @@ const {
     signup,
     login,
     logout
-} = require('../controllers/users');
+} = require('../controllers/auth');
 const {signUpValidator}=require('../validators/index');
 
 Router.post('/register',signUpValidator, signup);

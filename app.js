@@ -8,7 +8,7 @@ const morgan=require('morgan');
 const cors=require('cors');
 
 const app = express();
-const userRoutes=require('./routes/users');
+const authRoutes=require('./routes/auth');
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
     // })
     res.json("Successful");
 });
-app.use('/users',userRoutes);
+app.use('/users',authRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`site is on the PORT ${process.env.PORT}`);

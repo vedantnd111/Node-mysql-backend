@@ -7,11 +7,6 @@ const expressJwt = require('express-jwt');
 const {
     mysqlConnection
 } = require('../utils/mysql_connection');
-const mysql_connection = require("../utils/mysql_connection");
-const {
-    error
-} = require("console");
-
 
 exports.signup = (req, res) => {
 
@@ -102,9 +97,4 @@ encryptPassword = (password, salt) => {
     } catch {
         return "";
     }
-}
-
-authanticate = (plainPassword) => {
-
-    return this.encryptPassword(plainPassword) === this.hashed_password;
 }
