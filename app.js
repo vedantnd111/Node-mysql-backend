@@ -9,6 +9,7 @@ const cors=require('cors');
 
 const app = express();
 const authRoutes=require('./routes/auth');
+const userRoutes=require('./routes/user');
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
     res.json("Successful");
 });
 app.use('/users',authRoutes);
+app.use('/api',userRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`site is on the PORT ${process.env.PORT}`);
