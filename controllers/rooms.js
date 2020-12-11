@@ -8,9 +8,7 @@ const _ = require('lodash');
 const {
     RSA_NO_PADDING
 } = require('constants');
-const {
-    nextTick
-} = require('process');
+const { nextTick } = require('process');
 
 exports.roomById = (req, res, next, id) => {
     mysqlConnection.query("SELECT * FROM room WHERE rid=?", [id], (error, results) => {
@@ -162,9 +160,9 @@ exports.update = (req, res) => {
 
 }
 
-exports.photo = (req, res,next) => {
-    if (req.room.image) {
-        res.set('Content-Type', req.room.image_type);
+exports.photo=(req,res)=>{
+    if(req.room.image){
+        res.set('Content-Type',req.room.image_type);
         return res.send(req.room.image);
     }
     next();
