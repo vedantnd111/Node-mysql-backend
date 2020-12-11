@@ -11,7 +11,7 @@ const {
 const { nextTick } = require('process');
 
 exports.roomById = (req, res, next, id) => {
-    mysqlConnection.query("SELECT * FROM room WHERE rid=?", [id], (error, results) => {
+    mysqlConnection.query("SELECT rid,hostel_name,rnumber,address,owner_name,tenant,mobile_number,price FROM room WHERE rid=?", [id], (error, results) => {
         if (error || !results) {
             console.log(error);
             return res.status(404).json({
