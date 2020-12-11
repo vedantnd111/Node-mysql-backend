@@ -10,7 +10,8 @@ const {
     update,
     roomById,
     removeById,
-    photo
+    photo,
+    removeById
 } = require('../controllers/rooms');
 const {
     userById

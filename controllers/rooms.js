@@ -8,10 +8,25 @@ const _ = require('lodash');
 const {
     RSA_NO_PADDING
 } = require('constants');
+
 const { nextTick } = require('process');
 
+exports.roomById = (req, res, next, id) => { mysqlConnection.query("SELECT * FROM room WHERE rid=?", [id], (error, results) => {
+    if (error || !results) {
+        console.log(error);
+        return res.status(404).json({
+            error: "User not found"
+        });
+    } else {
+        const [room] = results;
+        req.room = room;
+        next();
+    }
+})
+}
+
 exports.roomById = (req, res, next, id) => {
-    mysqlConnection.query("SELECT rid,hostel_name,rnumber,address,owner_name,tenant,mobile_number,price FROM room WHERE rid=?", [id], (error, results) => {
+    mysqlConnection.query("SELECT * FROM room WHERE rid=?", [id], (error, results) => {
         if (error || !results) {
             console.log(error);
             return res.status(404).json({
@@ -27,6 +42,7 @@ exports.roomById = (req, res, next, id) => {
 
 exports.readAll = (req, res) => {
     mysqlConnection.query('SELECT rid,hostel_name,rnumber,address,owner_name,tenant,mobile_number,price FROM room', (err, results) => {
+    mysqlConnection.query('SELECT * FROM room', (err, results) => {
         if (err) {
             res.status(400).json({
                 error: "there are no rooms!"
@@ -37,7 +53,9 @@ exports.readAll = (req, res) => {
             });
         }
     })
+});
 }
+
 
 exports.read = (req, res) => {
     return res.status(200).json(req.room);
@@ -167,7 +185,6 @@ exports.photo=(req,res)=>{
     }
     next();
 }
-
 exports.removeById = (req, res) => {
     const rid = req.room.rid;
     mysqlConnection.query("delete from room where rid=?", rid, (err, results) => {
