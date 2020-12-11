@@ -50,17 +50,17 @@ exports.login = (req, res) => {
     // let sql = `SELECT email,password FROM user WHERE email=${email}`;
     mysqlConnection.query(`select * from user where email = ?`,
         [email], (error, results) => {
-            let [user_real] = results;
-            if (error || !results) {
+            let [user_real] = results;  
+            if (error || (results===undefined || results.length===0)) {
               return  res.status(404).json({
-                    email: "user with this email do not exists!!"
+                    error: "user with this email id do not exists!!"
                 });
             }
             else if (user_real.password !== encryptPassword(password, user_real.salt)) {
                 // console.log("uuid: ",uuidv4());
                 // console.log("pass",encryptPassword(password, uuidv4()));
                return res.status(400).json({
-                    error: "password do not match!!"
+                    error: "please enter correct password!!"
                 });
             }
 
