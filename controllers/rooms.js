@@ -8,6 +8,9 @@ const _ = require('lodash');
 const {
     RSA_NO_PADDING
 } = require('constants');
+const {
+    nextTick
+} = require('process');
 
 exports.roomById = (req, res, next, id) => {
     mysqlConnection.query("SELECT * FROM room WHERE rid=?", [id], (error, results) => {
@@ -25,7 +28,7 @@ exports.roomById = (req, res, next, id) => {
 }
 
 exports.readAll = (req, res) => {
-    mysqlConnection.query('SELECT * FROM room', (err, results) => {
+    mysqlConnection.query('SELECT rid,hostel_name,rnumber,address,owner_name,tenant,mobile_number,price FROM room', (err, results) => {
         if (err) {
             res.status(400).json({
                 error: "there are no rooms!"
@@ -157,6 +160,14 @@ exports.update = (req, res) => {
 
     });
 
+}
+
+exports.photo = (req, res,next) => {
+    if (req.room.image) {
+        res.set('Content-Type', req.room.image_type);
+        return res.send(req.room.image);
+    }
+    next();
 }
 
 exports.removeById = (req, res) => {

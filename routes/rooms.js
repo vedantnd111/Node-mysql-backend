@@ -9,7 +9,8 @@ const {
     create,
     update,
     roomById,
-    removeById
+    removeById,
+    photo
 } = require('../controllers/rooms');
 const {
     userById
@@ -25,6 +26,8 @@ Router.post('/room/:userId', requireLogIn, isAdmin, create);
 Router.put('/room/:roomId/:userId', requireLogIn, isAdmin, update);
 
 Router.delete('/room/:roomId/:userId', requireLogIn, isAdmin, removeById);
+
+Router.get('/photo/:roomId',photo);
 
 Router.param('roomId', roomById);
 
