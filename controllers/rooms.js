@@ -45,15 +45,30 @@ exports.roomById = (req, res, next, id) => {
 
 exports.readAll = (req, res) => {
     mysqlConnection.query('SELECT rid,hostel_name,rnumber,address,owner_name,tenant,mobile_number,price FROM room', (err, results) => {
-        mysqlConnection.query('SELECT * FROM room', (err, results) => {
-            if (err) {
-                res.status(400).json({
-                    error: "there are no rooms!"
-                });
-            } else {
-                res.status(200).json(results);
-            }
-        })
+        if (err) {
+            res.status(400).json({
+                error: "there are no rooms!"
+            });
+        } else {
+            let rooms = [];
+            results.map(room => {
+                if (room.tenant === null) {
+                    rooms.push(room);
+                }
+            });
+            res.status(200).json(rooms);
+        }
+    });
+}
+exports.list = (req, res) => {
+    mysqlConnection.query('SELECT rid,hostel_name,rnumber,address,owner_name,tenant,mobile_number,price FROM room', (err, results) => {
+        if (err) {
+            res.status(400).json({
+                error: "there are no rooms!"
+            });
+        } else {
+            res.status(200).json(results);
+        }
     });
 }
 
@@ -73,15 +88,16 @@ exports.create = (req, res) => {
             });
         }
         const {
-            rname,
+            hostel_name,
             rnumber,
             address,
             owner_name,
-            mobile_number
+            mobile_number,
+            price
         } = fields;
         let data = '';
         let type = '';
-        if (!rname || !rnumber || !address || !owner_name || !mobile_number) {
+        if (!hostel_name || !rnumber || !address || !owner_name || !mobile_number || !price) {
             return res.status(400).json({
                 error: "all fields are required!!"
             });
@@ -96,13 +112,14 @@ exports.create = (req, res) => {
             type = files.image.type;
         }
         room = {
-            rname: rname,
+            hostel_name: hostel_name,
             rnumber: rnumber,
             address: address,
             owner_name: owner_name,
             image: data,
             image_type: type,
-            mobile_number: mobile_number
+            mobile_number: mobile_number,
+            price:price
         };
         mysqlConnection.query("INSERT INTO room SET ?", room, (err, results) => {
             if (err) {
@@ -133,15 +150,16 @@ exports.update = (req, res) => {
             });
         }
         const {
-            rname,
+            hostel_name,
             rnumber,
             address,
             owner_name,
-            mobile_number
+            mobile_number,
+            price
         } = fields;
         let data = '';
         let type = '';
-        if (!rname || !rnumber || !address || !owner_name || !mobile_number) {
+        if (!hostel_name || !rnumber || !address || !owner_name || !mobile_number || !price) {
             return res.status(400).json({
                 error: "all fields are required!!"
             });
@@ -159,8 +177,8 @@ exports.update = (req, res) => {
             type = files.image.type;
         }
         const room1 = req.room;
-        mysqlConnection.query("UPDATE room SET rname=?,rnumber=?,address=?,owner_name=?,tenant=?,image=?,mobile_number=?,image_type=? WHERE rid=?",
-            [room.rname, room.rnumber, room.address, room.owner_name, room.tenant, room.image, room.mobile_number, room.image_type, room.rid], (err, results) => {
+        mysqlConnection.query("UPDATE room SET hostel_name=?,rnumber=?,address=?,owner_name=?,tenant=?,image=?,mobile_number=?,image_type=?,price=? WHERE rid=?",
+            [room.hostel_name, room.rnumber, room.address, room.owner_name, room.tenant, data, room.mobile_number, type,room.price, room.rid], (err, results) => {
                 if (err) {
                     // console.log(err);
                     return res.status(400).json({

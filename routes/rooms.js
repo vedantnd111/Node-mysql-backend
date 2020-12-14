@@ -12,7 +12,8 @@ const {
     roomById,
     removeById,
     photo,
-    fillTenant
+    fillTenant,
+    list
 } = require('../controllers/rooms');
 const {
     userById
@@ -20,6 +21,8 @@ const {
 const Router = express.Router();
 
 Router.get('/rooms', readAll);
+
+Router.get('/rooms/admin',list);
 
 Router.get('/room/:roomId', read);
 
