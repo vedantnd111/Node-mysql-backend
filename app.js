@@ -11,6 +11,7 @@ const app = express();
 const authRoutes=require('./routes/auth');
 const userRoutes=require('./routes/user');
 const roomRoutes=require('./routes/rooms');
+const braintreeRoutes=require('./routes/braintree');
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 app.use('/users',authRoutes);
 app.use('/api',userRoutes);
 app.use('/api',roomRoutes);
+app.use('/api',braintreeRoutes);
 
 app.listen(process.env.PORT, () => {
     console.log(`site is on the PORT ${process.env.PORT}`);

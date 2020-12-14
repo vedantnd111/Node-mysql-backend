@@ -9,20 +9,23 @@ const {
     RSA_NO_PADDING
 } = require('constants');
 
-const { nextTick } = require('process');
+const {
+    nextTick
+} = require('process');
 
-exports.roomById = (req, res, next, id) => { mysqlConnection.query("SELECT * FROM room WHERE rid=?", [id], (error, results) => {
-    if (error || !results) {
-        console.log(error);
-        return res.status(404).json({
-            error: "User not found"
-        });
-    } else {
-        const [room] = results;
-        req.room = room;
-        next();
-    }
-})
+exports.roomById = (req, res, next, id) => {
+    mysqlConnection.query("SELECT * FROM room WHERE rid=?", [id], (error, results) => {
+        if (error || !results) {
+            console.log(error);
+            return res.status(404).json({
+                error: "User not found"
+            });
+        } else {
+            const [room] = results;
+            req.room = room;
+            next();
+        }
+    })
 }
 
 exports.roomById = (req, res, next, id) => {
@@ -42,18 +45,16 @@ exports.roomById = (req, res, next, id) => {
 
 exports.readAll = (req, res) => {
     mysqlConnection.query('SELECT rid,hostel_name,rnumber,address,owner_name,tenant,mobile_number,price FROM room', (err, results) => {
-    mysqlConnection.query('SELECT * FROM room', (err, results) => {
-        if (err) {
-            res.status(400).json({
-                error: "there are no rooms!"
-            });
-        } else {
-            res.status(200).json({
-                rooms: [results]
-            });
-        }
-    })
-});
+        mysqlConnection.query('SELECT * FROM room', (err, results) => {
+            if (err) {
+                res.status(400).json({
+                    error: "there are no rooms!"
+                });
+            } else {
+                res.status(200).json(results);
+            }
+        })
+    });
 }
 
 
@@ -178,9 +179,9 @@ exports.update = (req, res) => {
 
 }
 
-exports.photo=(req,res)=>{
-    if(req.room.image){
-        res.set('Content-Type',req.room.image_type);
+exports.photo = (req, res) => {
+    if (req.room.image) {
+        res.set('Content-Type', req.room.image_type);
         return res.send(req.room.image);
     }
     next();
@@ -198,4 +199,24 @@ exports.removeById = (req, res) => {
             });
         }
     })
+}
+
+exports.fillTenant = (req, res) => {
+    const room = req.room;
+    const user = req.profile;
+    room.tenant === null ? room.tenant = user.name : room.tenant = room.tenant;
+    mysqlConnection.query("UPDATE room SET hostel_name=?,rnumber=?,address=?,owner_name=?,tenant=?,image=?,mobile_number=?,image_type=? WHERE rid=?", [
+        room.hostel_name, room.rnumber, room.address, room.owner_name, room.tenant, room.image, room.mobile_number, room.image_type, room.rid
+    ], (err, results) => {
+        if (err || !results) {
+            // console.log(err);
+            res.status(400).json({
+                error: err
+            });
+        } else {
+            console.log(room);
+            console.log(user);
+            res.status(200).json(results);
+        }
+    });
 }

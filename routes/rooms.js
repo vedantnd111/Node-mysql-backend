@@ -1,7 +1,8 @@
 const express = require('express');
 const {
     requireLogIn,
-    isAdmin
+    isAdmin,
+    isAuth
 } = require('../controllers/auth');
 const {
     readAll,
@@ -11,7 +12,7 @@ const {
     roomById,
     removeById,
     photo,
-    removeById
+    fillTenant
 } = require('../controllers/rooms');
 const {
     userById
@@ -28,7 +29,9 @@ Router.put('/room/:roomId/:userId', requireLogIn, isAdmin, update);
 
 Router.delete('/room/:roomId/:userId', requireLogIn, isAdmin, removeById);
 
-Router.get('/photo/:roomId',photo);
+Router.put('/room/fill/tenant/:userId/:roomId', requireLogIn, isAuth, fillTenant);
+
+Router.get('/photo/:roomId', photo);
 
 Router.param('roomId', roomById);
 
